@@ -8,8 +8,8 @@ experience_section <- function(xlsx = "data/cv.xlsx", sheet = "experience", page
   ]
 
   if (page_break_after) {
-    c("## Professional Experience {data-icon=laptop .break-after-me}", text)
+    c("## Research Experience {data-icon=laptop .break-after-me}", text)
   } else {
-    c("## Professional Experience {data-icon=laptop}", text)
+    c("## Research Experience {data-icon=laptop}", text)
   }
 }
