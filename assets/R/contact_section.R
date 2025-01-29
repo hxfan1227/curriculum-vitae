@@ -15,6 +15,7 @@ contact_section <- function(xlsx = "data/cv.xlsx", sheet = "contact", colour = "
         # "- %s [%s](https://twitter.com/%s)", # twiter
         # "- %s [@%s](https://%s)", # mastodon
         "- %s %s", # weixin
+        "- %s %s", # H-index
         "\n",
         sep = "\n"
       ),
@@ -29,7 +30,8 @@ contact_section <- function(xlsx = "data/cv.xlsx", sheet = "contact", colour = "
       fontawesome::fa("github", fill = colour), github, github,
       # fontawesome::fa("twitter", fill = colour), twitter, twitter,
       # fontawesome::fa("mastodon", fill = colour), mastodon, paste(rev(strsplit(mastodon, "@")[[1]]), collapse = "/@"),
-      fontawesome::fa("weixin", fill = colour), weixin
+      fontawesome::fa("weixin", fill = colour), weixin,
+      'H-Index:', scholar::get_profile(id = scholar)$h_index
     )
   ]
 }
