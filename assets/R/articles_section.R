@@ -52,14 +52,14 @@ clean_field <- function(pattern, x) {
 }
 
 read_article <- function(.x, customColor = '\\\\textcolorCustomblue\\\\textbf') {
-  authors <- do.call("rbind", strsplit(unlist(strsplit(gsub(pattern = customColor, replacement = ' ', x = clean_field("author", .x)), " and ")), ", "))
+  authors <- do.call("rbind", strsplit(unlist(strsplit(gsub(pattern = customColor, replacement = '', x = clean_field("author", .x)), " and ")), ", "))
   if (NCOL(authors) > 1) { # English
     authors <- apply(X = authors[, c(2, 1)], MARGIN = 1, FUN = function(irow) {
       gsub(" ", "&nbsp;", paste(unique(irow), collapse = " "))
     })
-    authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " and")
+    authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " and ")
   } else {
-    authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " 和") # Chinese
+    authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " 和 ") # Chinese
   }
   data.frame(
     title = clean_field("title", .x),
