@@ -1,15 +1,15 @@
-articles_section <- function(bib = "data/cv.bib", author = NULL, page_break_after = FALSE, only_first = FALSE) {
+articles_section <- function(bib = "data/cv.bib", author = NULL, author_zh = NULL, page_break_after = FALSE, only_first = FALSE) {
   author <- gsub(" ", "&nbsp;", author)
   text <- data.table::setDT(read_bib(bib))[
     j = sprintf(
       "### %s\n\n%s\n\nN/A\n\n%s %s\n\n::: aside\n\n*[%s](%s)*\n%s\n:::",
       title,
-      format_bib_author(authors, first, author),
+      format_bib_author(authors, first, chinese, author, author_zh),
       month, year,
       journal, doi,
       ifelse(
         test = first,
-        yes = '<p style="font-size: 75%;"><sup>&dagger;</sup> As first or co-first author.</p>',
+        yes = '<p style="font-size: 75%;"><sup>&dagger;</sup> As first or corresponding author.</p>',
         no = ""
       )
     )
@@ -18,7 +18,7 @@ articles_section <- function(bib = "data/cv.bib", author = NULL, page_break_afte
   articles_count <- length(text)
 
   if (only_first) {
-    text <- text[grepl("As first or co-first author", text)]
+    text <- text[grepl("As first or corresponding author", text)]
     articles_count <- sprintf("%s + %s", length(text), articles_count - length(text))
   }
 
@@ -51,12 +51,16 @@ clean_field <- function(pattern, x) {
   )
 }
 
-read_article <- function(.x) {
-  authors <- do.call("rbind", strsplit(unlist(strsplit(clean_field("author", .x), " and ")), ", "))
-  authors <- apply(X = authors[, c(2, 1)], MARGIN = 1, FUN = function(irow) {
-    gsub(" ", "&nbsp;", paste(unique(irow), collapse = " "))
-  })
-  authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " and ")
+read_article <- function(.x, customColor = '\\\\textcolorCustomblue\\\\textbf') {
+  authors <- do.call("rbind", strsplit(unlist(strsplit(gsub(pattern = customColor, replacement = ' ', x = clean_field("author", .x)), " and ")), ", "))
+  if (NCOL(authors) > 1) { # English
+    authors <- apply(X = authors[, c(2, 1)], MARGIN = 1, FUN = function(irow) {
+      gsub(" ", "&nbsp;", paste(unique(irow), collapse = " "))
+    })
+    authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " and")
+  } else {
+    authors <- paste(paste(authors[-length(authors)], collapse = ", "), authors[length(authors)], sep = " 和") # Chinese
+  }
   data.frame(
     title = clean_field("title", .x),
     month = gsub("May.", "May", paste0(capitalise(clean_field("month", .x)), ".")),
@@ -64,6 +68,11 @@ read_article <- function(.x) {
     doi = clean_field("doi", .x),
     authors = authors,
     journal = clean_field("journal", .x),
+    chinese = if (any(grepl("keywords", .x))) {
+      grepl("chinese", clean_field("keywords", .x))
+    } else {
+      FALSE
+    },
     first = if (any(grepl("keywords", .x))) {
       grepl("first", clean_field("keywords", .x))
     } else {
@@ -93,18 +102,19 @@ read_bib <- function(path) {
     no = paste0("https://www.doi.org/", all_bib[["doi"]])
   )
 
-  all_bib[order(all_bib[["year"]], all_bib[["month"]], decreasing = TRUE), ]
+  all_bib[order(-all_bib[["chinese"]], all_bib[["first"]], all_bib[["year"]], all_bib[["month"]], decreasing = TRUE), ]
 }
 
-format_bib_author <- function(authors, first, author, max = 10) {
+format_bib_author <- function(authors, first, chinese, author, author_zh, max = 10) {
   mapply(
     iauthors = authors,
     ifirst = first,
-    FUN = function(iauthors, ifirst) {
-      split_authors <- unlist(strsplit(strsplit(iauthors, ", ")[[1]], " and "))
+    ichinese = chinese, 
+    FUN = function(iauthors, ifirst, ichinese) {
+      split_authors <- unlist(strsplit(strsplit(iauthors, ", ")[[1]], if (ichinese) " 和 " else " and " ))
       split_authors <- gsub(
-        pattern = author,
-        replacement = paste0("<u>", author, "</u>", if (ifirst) "<sup>&dagger;</sup>" else ""),
+        pattern = if (ichinese) author_zh else author,
+        replacement = paste0("<u>", if (ichinese) author_zh else author, "</u>", if (ifirst) "<sup>&dagger;</sup>" else ""),
         x = split_authors
       )
       pos_author <- grep(author, split_authors)
@@ -112,7 +122,7 @@ format_bib_author <- function(authors, first, author, max = 10) {
         paste(
           paste(split_authors[-length(split_authors)], collapse = ", "),
           split_authors[length(split_authors)],
-          sep = " and "
+          sep = if (ichinese) " 和 " else " and "
         )
       } else {
         switch(
@@ -140,7 +150,7 @@ format_bib_author <- function(authors, first, author, max = 10) {
                 ),
                 collapse = ", "
               ),
-              " and ",
+              if (ichinese) " 和 " else " and ",
               split_authors[length(split_authors)]
             )
           },
@@ -162,7 +172,7 @@ format_bib_author <- function(authors, first, author, max = 10) {
                 ),
                 collapse = ", "
               ),
-              " and ",
+              if (ichinese) " 和 " else " and ",
               split_authors[length(split_authors)]
             )
           },
@@ -184,7 +194,7 @@ format_bib_author <- function(authors, first, author, max = 10) {
                 ),
                 collapse = ", "
               ),
-              " and ",
+              if (ichinese) " 和 " else " and ",
               split_authors[length(split_authors)]
             )
           },
@@ -192,7 +202,7 @@ format_bib_author <- function(authors, first, author, max = 10) {
             paste(
               paste(split_authors[-length(split_authors)], collapse = ", "),
               split_authors[length(split_authors)],
-              sep = " and "
+              sep = if (ichinese) " 和 " else " and "
             )
           }
         )

@@ -1,6 +1,7 @@
 ---
 params:
   author: "Hongxiang Fan"
+  author_zh: "范宏翔"
   xlsx: "data/cv.xlsx"
   bib: "data/cv.bib"
   picture: "data/cv.png"
@@ -57,7 +58,7 @@ cat(
   # oral_section(xlsx = params[["xlsx"]], sheet = "oral", page_break_after = FALSE, colour = "#33333"),
   # poster_section(xlsx = params[["xlsx"]], sheet = "poster", page_break_after = FALSE, colour = "#33333"),
   packages_section(xlsx = params[["xlsx"]], sheet = "packages", author = params[["author"]], page_break_after = F),
-  articles_section(bib = params[["bib"]], author = params[["author"]], page_break_after = FALSE, only_first = F),
+  articles_section(bib = params[["bib"]], author = params[["author"]], author_zh = params[["author_zh"]], page_break_after = FALSE, only_first = F),
   sep = "\n"
 )
 ```
