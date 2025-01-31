@@ -9,7 +9,7 @@ articles_section <- function(bib = "data/cv.bib", author = NULL, author_zh = NUL
       journal, doi,
       ifelse(
         test = first,
-        yes = '<p style="font-size: 75%;"><sup>&dagger;</sup> As first or corresponding author.</p>',
+        yes = '<p style="font-size: 75%; margin: 0;"><sup>&dagger;</sup> As first or corresponding author.</p>',
         no = ""
       )
     )
