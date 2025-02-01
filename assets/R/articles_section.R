@@ -3,7 +3,7 @@ articles_section <- function(bib = "data/cv.bib", author = NULL, author_zh = NUL
   text <- data.table::setDT(read_bib(bib))[
     j = sprintf(
       # "### %s\n\n%s\n\nN/A\n\n%s %s\n\n::: aside\n\n*[%s](%s)*\n%s\n:::",
-      "### %s\n\n%s\n\nN/A\n\n%s %s\n\n*Citations: %s*\n\n::: aside\n\n*[%s](%s)*\n%s\n:::",
+      "### %s\n\n%s\n\nN/A\n\n%s %s\n\n*Citations: %s*\n\n::: aside\n\n*[%s](%s)*\n%s\n:::", # add citations
       title,
       format_bib_author(authors, first, chinese, author, author_zh),
       month, year,
