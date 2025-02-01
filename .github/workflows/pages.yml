@@ -6,6 +6,7 @@ on:
     branches: ["main"]
     paths:
       - data/**
+      - assets/**
       - curriculum-vitae.Rmd
   schedule:
     - cron: '0 0 1 */1 *'
