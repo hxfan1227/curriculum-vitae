@@ -2,10 +2,12 @@ articles_section <- function(bib = "data/cv.bib", author = NULL, author_zh = NUL
   author <- gsub(" ", "&nbsp;", author)
   text <- data.table::setDT(read_bib(bib))[
     j = sprintf(
-      "### %s\n\n%s\n\nN/A\n\n%s %s\n\n::: aside\n\n*[%s](%s)*\n%s\n:::",
+      # "### %s\n\n%s\n\nN/A\n\n%s %s\n\n::: aside\n\n*[%s](%s)*\n%s\n:::",
+      "### %s\n\n%s\n\nN/A\n\n%s %s\n\n*Citations: %s*\n\n::: aside\n\n*[%s](%s)*\n%s\n:::",
       title,
       format_bib_author(authors, first, chinese, author, author_zh),
       month, year,
+      counts,
       journal, doi,
       ifelse(
         test = first,
@@ -101,7 +103,8 @@ read_bib <- function(path) {
     yes = all_bib[["doi"]],
     no = paste0("https://www.doi.org/", all_bib[["doi"]])
   )
-
+  all_bib[['counts']] <- lapply(all_bib[['doi']], function(.x) get_cr_citation_count(gsub('https://www.doi.org/', '', .x)))
+  
   all_bib[order(-all_bib[["chinese"]], all_bib[["first"]], all_bib[["year"]], all_bib[["month"]], decreasing = TRUE), ]
 }
 
