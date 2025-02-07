@@ -4,10 +4,6 @@ name: Deploy CV to Pages
 on:
   push:
     branches: ["main"]
-    paths:
-      - data/**
-      - assets/**
-      - curriculum-vitae.Rmd
   schedule:
     - cron: "0 12 * * *"
   workflow_dispatch:
