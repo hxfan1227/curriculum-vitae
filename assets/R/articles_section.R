@@ -103,7 +103,7 @@ read_bib <- function(path) {
     yes = all_bib[["doi"]],
     no = paste0("https://www.doi.org/", all_bib[["doi"]])
   )
-  all_bib[['counts']] <- lapply(all_bib[['doi']], function(.x) get_cr_citation_count(gsub('https://www.doi.org/', '', .x)))
+  all_bib[['counts']] <- lapply(all_bib[['doi']], function(.x) get_best_citation_count(gsub('https://www.doi.org/', '', .x)))
   
   all_bib[order(-all_bib[["chinese"]], all_bib[["first"]], all_bib[["year"]], all_bib[["month"]], decreasing = TRUE), ]
 }
