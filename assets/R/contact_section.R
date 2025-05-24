@@ -1,3 +1,9 @@
+get_h_index_safe <- function(id) {
+  tryCatch({
+    scholar::get_profile(id = id)$h_index
+  }, error = function(e) '-')
+}
+
 contact_section <- function(xlsx = "data/cv.xlsx", sheet = "contact", colour = "#333333") {
   read_excel_sheet(xlsx, sheet)[
     j = sprintf(
@@ -31,7 +37,7 @@ contact_section <- function(xlsx = "data/cv.xlsx", sheet = "contact", colour = "
       # fontawesome::fa("twitter", fill = colour), twitter, twitter,
       # fontawesome::fa("mastodon", fill = colour), mastodon, paste(rev(strsplit(mastodon, "@")[[1]]), collapse = "/@"),
       fontawesome::fa("weixin", fill = colour), weixin,
-      'H-Index:', scholar::get_profile(id = scholar)$h_index
+      'H-Index:', get_h_index_safe(id = scholar)
     )
   ]
 }
