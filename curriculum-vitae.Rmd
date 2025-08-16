@@ -18,6 +18,7 @@ output:
 
 ```{r}
 #| include: false
+library(pagedown)
 knitr::opts_chunk$set(
   results = "asis",
   eval = TRUE,
@@ -26,7 +27,6 @@ knitr::opts_chunk$set(
   error = FALSE,
   warning = FALSE
 )
-library(pagedown)
 invisible(sapply(
   X = list.files(
     path = file.path("assets", "R"),
