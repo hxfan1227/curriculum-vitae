@@ -51,7 +51,7 @@ jobs:
       - name: Render curriculum-vitae.Rmd
         run: Rscript -e 'rmarkdown::render("curriculum-vitae.Rmd", output_file = "index.html", output_dir = "docs")'
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: 'docs'
       - name: Deploy to GitHub Pages
